@@ -25,6 +25,15 @@ public class UserService {
         userList.addAll(Arrays.asList(user1,user2,user3,user4,user5));
     }
 
+
+    public void addUser(User user) {
+        userList.add(user);
+    }
+
+    public boolean deleteUser(Integer id) {
+        return userList.removeIf(user -> user.getId() == id);
+    }
+
     public Optional<User> getUser(Integer id) {
         Optional<User> optional = Optional.empty();
         for (User user: userList) {
@@ -34,5 +43,16 @@ public class UserService {
             }
         }
         return optional;
+    }
+
+    public boolean modifyUser(User modifiedUser) {
+        for (int i = 0; i < userList.size(); i++) {
+            User user = userList.get(i);
+            if (user.getId() == modifiedUser.getId()) {
+                userList.set(i, modifiedUser);
+                return true;
+            }
+        }
+        return false;
     }
 }
