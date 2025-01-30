@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.Optional;
 
 @RestController
+@RequestMapping(value = "/user")
 public class UserController {
 
     private final UserService userService;
@@ -19,24 +20,29 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/user")
-    public void addUser(@RequestBody User user) {
-        userService.addUser(user);
-    }
-
-    @DeleteMapping("/user")
-    public boolean deleteUser(@RequestParam Integer id) {
-        return userService.deleteUser(id);
-    }
-
-    @GetMapping("/user")
-    public User getUser(@RequestParam Integer id){
+    @GetMapping(value = "/{id}", produces = "application/json")
+    public User getUserV1(@PathVariable Integer id){
         Optional<User> user = userService.getUser(id);
         return (User) user.orElse(null);
     }
 
-    @PutMapping("/user")
-    public boolean modifyUser(@RequestBody User user) {
+    @GetMapping(value = "/{id}", produces = "text/plain")
+    public String getUserV2(@PathVariable Integer id){
+        return userService.getUser(id).map(user -> user.toString()).orElse("User not found");
+    }
+
+    @PostMapping()
+    public void addUser(@RequestBody User user) {
+        userService.addUser(user);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public boolean deleteUser(@PathVariable Integer id) {
+        return userService.deleteUser(id);
+    }
+
+    @PutMapping(value = "/{id}")
+    public boolean modifyUser(@PathVariable Integer id,@RequestBody User user) {
         return userService.modifyUser(user);
     }
 }
